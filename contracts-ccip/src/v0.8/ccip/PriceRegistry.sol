@@ -8,7 +8,7 @@ import {OwnerIsCreator} from "./../shared/access/OwnerIsCreator.sol";
 import {Internal} from "./libraries/Internal.sol";
 import {USDPriceWith18Decimals} from "./libraries/USDPriceWith18Decimals.sol";
 
-import {EnumerableSet} from "../vendor/openzeppelin-solidity/v4.8.0/contracts/utils/structs/EnumerableSet.sol";
+import {EnumerableSet} from "../vendor/openzeppelin-solidity/v4.8.3/contracts/utils/structs/EnumerableSet.sol";
 
 /// @notice The PriceRegistry contract responsibility is to store the current gas price in USD for a given destination chain,
 /// and the price of a token in USD allowing the owner or priceUpdater to update this value.
@@ -30,7 +30,6 @@ contract PriceRegistry is IPriceRegistry, OwnerIsCreator, ITypeAndVersion {
   event UsdPerUnitGasUpdated(uint64 indexed destChain, uint256 value, uint256 timestamp);
   event UsdPerTokenUpdated(address indexed token, uint256 value, uint256 timestamp);
 
-  // solhint-disable-next-line chainlink-solidity/all-caps-constant-storage-variables
   string public constant override typeAndVersion = "PriceRegistry 1.2.0";
 
   /// @dev The gas price per unit of gas for a given destination chain, in USD with 18 decimals.

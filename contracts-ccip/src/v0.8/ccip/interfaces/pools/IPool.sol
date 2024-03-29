@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IERC20} from "../../../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
+import {IERC20} from "../../../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
 
 // Shared public interface for multiple pool types.
 // Each pool type handles a different child token model (lock/unlock, mint/burn.)
@@ -10,7 +10,7 @@ interface IPool {
   /// @param originalSender Original sender of the tokens.
   /// @param receiver Receiver of the tokens on destination chain.
   /// @param amount Amount to lock or burn.
-  /// @param destChainSelector Destination chain Id.
+  /// @param remoteChainSelector Destination chain Id.
   /// @param extraArgs Additional data passed in by sender for lockOrBurn processing
   /// in custom pools on source chain.
   /// @return retData Optional field that contains bytes. Unused for now but already
@@ -19,7 +19,7 @@ interface IPool {
     address originalSender,
     bytes calldata receiver,
     uint256 amount,
-    uint64 destChainSelector,
+    uint64 remoteChainSelector,
     bytes calldata extraArgs
   ) external returns (bytes memory);
 
@@ -27,7 +27,7 @@ interface IPool {
   /// @param originalSender Original sender of the tokens.
   /// @param receiver Receiver of the tokens.
   /// @param amount Amount to release or mint.
-  /// @param sourceChainSelector Source chain Id.
+  /// @param remoteChainSelector Source chain Id.
   /// @param extraData Additional data supplied offchain for releaseOrMint processing in
   /// custom pools on dest chain. This could be an attestation that was retrieved through a
   /// third party API.
@@ -36,7 +36,7 @@ interface IPool {
     bytes memory originalSender,
     address receiver,
     uint256 amount,
-    uint64 sourceChainSelector,
+    uint64 remoteChainSelector,
     bytes memory extraData
   ) external;
 

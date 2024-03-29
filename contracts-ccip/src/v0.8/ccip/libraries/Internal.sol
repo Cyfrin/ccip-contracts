@@ -26,7 +26,7 @@ library Internal {
   /// @dev RMN depends on this struct, if changing, please notify the RMN maintainers.
   struct TokenPriceUpdate {
     address sourceToken; // Source token
-    uint224 usdPerToken; // 1e18 USD per smallest unit of token
+    uint224 usdPerToken; // 1e18 USD per 1e18 of the smallest token denomination.
   }
 
   /// @notice Gas price for a given chain in USD, its value may contain tightly packed fields.
@@ -95,13 +95,14 @@ library Internal {
     EVM2EVMMessage memory original,
     Client.EVMTokenAmount[] memory destTokenAmounts
   ) internal pure returns (Client.Any2EVMMessage memory message) {
-    message = Client.Any2EVMMessage({
-      messageId: original.messageId,
-      sourceChainSelector: original.sourceChainSelector,
-      sender: abi.encode(original.sender),
-      data: original.data,
-      destTokenAmounts: destTokenAmounts
-    });
+    return
+      Client.Any2EVMMessage({
+        messageId: original.messageId,
+        sourceChainSelector: original.sourceChainSelector,
+        sender: abi.encode(original.sender),
+        data: original.data,
+        destTokenAmounts: destTokenAmounts
+      });
   }
 
   bytes32 internal constant EVM_2_EVM_MESSAGE_HASH = keccak256("EVM2EVMMessageHashV2");

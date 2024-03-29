@@ -18,9 +18,8 @@ import {OCR2BaseNoChecks} from "../ocr/OCR2BaseNoChecks.sol";
 import {AggregateRateLimiter} from "../AggregateRateLimiter.sol";
 import {EnumerableMapAddresses} from "../../shared/enumerable/EnumerableMapAddresses.sol";
 
-import {IERC20} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
-import {Address} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts/utils/Address.sol";
-import {ERC165Checker} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts/utils/introspection/ERC165Checker.sol";
+import {IERC20} from "../../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
+import {ERC165Checker} from "../../vendor/openzeppelin-solidity/v4.8.3/contracts/utils/introspection/ERC165Checker.sol";
 
 /// @notice EVM2EVMOffRamp enables OCR networks to execute multiple messages
 /// in an OffRamp in a single transaction.
@@ -30,7 +29,6 @@ import {ERC165Checker} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts
 /// messages which are committed in the commitStore. We still make use of OCR2 as an executor whitelist
 /// and turn-taking mechanism.
 contract EVM2EVMOffRamp is IAny2EVMOffRamp, AggregateRateLimiter, ITypeAndVersion, OCR2BaseNoChecks {
-  using Address for address;
   using ERC165Checker for address;
   using EnumerableMapAddresses for EnumerableMapAddresses.AddressToAddressMap;
 
@@ -98,8 +96,7 @@ contract EVM2EVMOffRamp is IAny2EVMOffRamp, AggregateRateLimiter, ITypeAndVersio
   }
 
   // STATIC CONFIG
-  // solhint-disable-next-line chainlink-solidity/all-caps-constant-storage-variables
-  string public constant override typeAndVersion = "EVM2EVMOffRamp 1.2.0";
+  string public constant override typeAndVersion = "EVM2EVMOffRamp 1.5.0-dev";
   /// @dev Commit store address on the destination chain
   address internal immutable i_commitStore;
   /// @dev ChainSelector of the source chain
@@ -343,6 +340,14 @@ contract EVM2EVMOffRamp is IAny2EVMOffRamp, AggregateRateLimiter, ITypeAndVersio
       (Internal.MessageExecutionState newState, bytes memory returnData) = _trialExecute(message, offchainTokenData);
       _setExecutionState(message.sequenceNumber, newState);
 
+      // Since it's hard to estimate whether manual execution will succeed, we
+      // revert the entire transaction if it fails. This will show the user if
+      // their manual exec will fail before they submit it.
+      if (manualExecution && newState == Internal.MessageExecutionState.FAILURE) {
+        // If manual execution fails, we revert the entire transaction.
+        revert ExecutionError(returnData);
+      }
+
       // The only valid prior states are UNTOUCHED and FAILURE (checked above)
       // The only valid post states are FAILURE and SUCCESS (checked below)
       if (newState != Internal.MessageExecutionState.FAILURE && newState != Internal.MessageExecutionState.SUCCESS)
@@ -427,7 +432,8 @@ contract EVM2EVMOffRamp is IAny2EVMOffRamp, AggregateRateLimiter, ITypeAndVersio
       );
     }
     if (
-      !message.receiver.isContract() || !message.receiver.supportsInterface(type(IAny2EVMMessageReceiver).interfaceId)
+      message.receiver.code.length == 0 ||
+      !message.receiver.supportsInterface(type(IAny2EVMMessageReceiver).interfaceId)
     ) return;
 
     (bool success, bytes memory returnData, ) = IRouter(s_dynamicConfig.router).routeMessage(
@@ -503,6 +509,7 @@ contract EVM2EVMOffRamp is IAny2EVMOffRamp, AggregateRateLimiter, ITypeAndVersio
       (address token, ) = s_poolsBySourceToken.at(i);
       sourceTokens[i] = IERC20(token);
     }
+    return sourceTokens;
   }
 
   /// @notice Get a token pool by its source token
@@ -538,6 +545,7 @@ contract EVM2EVMOffRamp is IAny2EVMOffRamp, AggregateRateLimiter, ITypeAndVersio
       (address token, ) = s_poolsByDestToken.at(i);
       destTokens[i] = IERC20(token);
     }
+    return destTokens;
   }
 
   /// @notice Adds and removed token pools.
