@@ -8,6 +8,17 @@ Everyday at 3AM, the latest version of the package is updated here, this way, yo
 
 ### Foundry
 
+1. Run this in your projects root directory.
+
 ```bash
 forge install cyfrin/ccip-contracts@1.4.0 --no-commit
 ```
+
+2. Then, update your `foundry.toml` to include the following in the `remappings`.
+
+```
+remappings = [
+  '@chainlink/contracts-ccip/=lib/ccip-contracts/contracts-ccip/',
+]
+```
+
