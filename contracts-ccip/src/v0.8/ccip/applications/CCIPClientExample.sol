@@ -7,7 +7,7 @@ import {Client} from "../libraries/Client.sol";
 import {CCIPReceiver} from "./CCIPReceiver.sol";
 import {OwnerIsCreator} from "../../shared/access/OwnerIsCreator.sol";
 
-import {IERC20} from "../../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
+import {IERC20} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
 
 // @notice Example of a client which supports EVM/non-EVM chains
 // @dev If chain specific logic is required for different chain families (e.g. particular
@@ -85,8 +85,8 @@ contract CCIPClientExample is CCIPReceiver, OwnerIsCreator {
       extraArgs: s_chains[destChainSelector],
       feeToken: address(0) // We leave the feeToken empty indicating we'll pay raw native.
     });
-    bytes32 messageId = IRouterClient(i_ccipRouter).ccipSend{
-      value: IRouterClient(i_ccipRouter).getFee(destChainSelector, message)
+    bytes32 messageId = IRouterClient(i_router).ccipSend{
+      value: IRouterClient(i_router).getFee(destChainSelector, message)
     }(destChainSelector, message);
     emit MessageSent(messageId);
   }
@@ -105,10 +105,10 @@ contract CCIPClientExample is CCIPReceiver, OwnerIsCreator {
       extraArgs: s_chains[destChainSelector],
       feeToken: address(s_feeToken)
     });
-    // Optional uint256 fee = i_ccipRouter.getFee(destChainSelector, message);
+    // Optional uint256 fee = i_router.getFee(destChainSelector, message);
     // Can decide if fee is acceptable.
     // address(this) must have sufficient feeToken or the send will revert.
-    bytes32 messageId = IRouterClient(i_ccipRouter).ccipSend(destChainSelector, message);
+    bytes32 messageId = IRouterClient(i_router).ccipSend(destChainSelector, message);
     emit MessageSent(messageId);
   }
 
@@ -121,7 +121,7 @@ contract CCIPClientExample is CCIPReceiver, OwnerIsCreator {
   ) external validChain(destChainSelector) {
     for (uint256 i = 0; i < tokenAmounts.length; ++i) {
       IERC20(tokenAmounts[i].token).transferFrom(msg.sender, address(this), tokenAmounts[i].amount);
-      IERC20(tokenAmounts[i].token).approve(i_ccipRouter, tokenAmounts[i].amount);
+      IERC20(tokenAmounts[i].token).approve(i_router, tokenAmounts[i].amount);
     }
     Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
       receiver: receiver,
@@ -130,10 +130,10 @@ contract CCIPClientExample is CCIPReceiver, OwnerIsCreator {
       extraArgs: s_chains[destChainSelector],
       feeToken: address(s_feeToken)
     });
-    // Optional uint256 fee = i_ccipRouter.getFee(destChainSelector, message);
+    // Optional uint256 fee = i_router.getFee(destChainSelector, message);
     // Can decide if fee is acceptable.
     // address(this) must have sufficient feeToken or the send will revert.
-    bytes32 messageId = IRouterClient(i_ccipRouter).ccipSend(destChainSelector, message);
+    bytes32 messageId = IRouterClient(i_router).ccipSend(destChainSelector, message);
     emit MessageSent(messageId);
   }
 
@@ -146,7 +146,7 @@ contract CCIPClientExample is CCIPReceiver, OwnerIsCreator {
   ) external validChain(destChainSelector) {
     for (uint256 i = 0; i < tokenAmounts.length; ++i) {
       IERC20(tokenAmounts[i].token).transferFrom(msg.sender, address(this), tokenAmounts[i].amount);
-      IERC20(tokenAmounts[i].token).approve(i_ccipRouter, tokenAmounts[i].amount);
+      IERC20(tokenAmounts[i].token).approve(i_router, tokenAmounts[i].amount);
     }
     bytes memory data;
     Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
@@ -156,10 +156,10 @@ contract CCIPClientExample is CCIPReceiver, OwnerIsCreator {
       extraArgs: s_chains[destChainSelector],
       feeToken: address(s_feeToken)
     });
-    // Optional uint256 fee = i_ccipRouter.getFee(destChainSelector, message);
+    // Optional uint256 fee = i_router.getFee(destChainSelector, message);
     // Can decide if fee is acceptable.
     // address(this) must have sufficient feeToken or the send will revert.
-    bytes32 messageId = IRouterClient(i_ccipRouter).ccipSend(destChainSelector, message);
+    bytes32 messageId = IRouterClient(i_router).ccipSend(destChainSelector, message);
     emit MessageSent(messageId);
   }
 

@@ -7,9 +7,9 @@ import {IMessageTransmitter} from "./IMessageTransmitter.sol";
 
 import {TokenPool} from "../TokenPool.sol";
 
-import {IERC20} from "../../../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "../../../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IERC165} from "../../../vendor/openzeppelin-solidity/v4.8.3/contracts/utils/introspection/IERC165.sol";
+import {IERC20} from "../../../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "../../../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC165} from "../../../vendor/openzeppelin-solidity/v4.8.0/contracts/utils/introspection/IERC165.sol";
 
 /// @notice This pool mints and burns USDC tokens through the Cross Chain Transfer
 /// Protocol (CCTP).
@@ -49,7 +49,8 @@ contract USDCTokenPool is TokenPool, ITypeAndVersion {
     uint32 sourceDomain;
   }
 
-  string public constant override typeAndVersion = "USDCTokenPool 1.4.0";
+  // solhint-disable-next-line chainlink-solidity/all-caps-constant-storage-variables
+  string public constant override typeAndVersion = "USDCTokenPool 1.2.0";
 
   // We restrict to the first version. New pool may be required for subsequent versions.
   uint32 public constant SUPPORTED_USDC_VERSION = 0;
@@ -78,9 +79,8 @@ contract USDCTokenPool is TokenPool, ITypeAndVersion {
     ITokenMessenger tokenMessenger,
     IERC20 token,
     address[] memory allowlist,
-    address armProxy,
-    address router
-  ) TokenPool(token, allowlist, armProxy, router) {
+    address armProxy
+  ) TokenPool(token, allowlist, armProxy) {
     if (address(tokenMessenger) == address(0)) revert InvalidConfig();
     IMessageTransmitter transmitter = IMessageTransmitter(tokenMessenger.localMessageTransmitter());
     uint32 transmitterVersion = transmitter.version();
@@ -91,7 +91,7 @@ contract USDCTokenPool is TokenPool, ITypeAndVersion {
     i_tokenMessenger = tokenMessenger;
     i_messageTransmitter = transmitter;
     i_localDomainIdentifier = transmitter.localDomain();
-    i_token.safeIncreaseAllowance(address(i_tokenMessenger), type(uint256).max);
+    i_token.safeApprove(address(i_tokenMessenger), type(uint256).max);
     emit ConfigSet(address(tokenMessenger));
   }
 
@@ -115,12 +115,12 @@ contract USDCTokenPool is TokenPool, ITypeAndVersion {
     address originalSender,
     bytes calldata destinationReceiver,
     uint256 amount,
-    uint64 remoteChainSelector,
+    uint64 destChainSelector,
     bytes calldata
-  ) external override onlyOnRamp(remoteChainSelector) checkAllowList(originalSender) returns (bytes memory) {
-    Domain memory domain = s_chainToDomain[remoteChainSelector];
-    if (!domain.enabled) revert UnknownDomain(remoteChainSelector);
-    _consumeOutboundRateLimit(remoteChainSelector, amount);
+  ) external override onlyOnRamp checkAllowList(originalSender) returns (bytes memory) {
+    Domain memory domain = s_chainToDomain[destChainSelector];
+    if (!domain.enabled) revert UnknownDomain(destChainSelector);
+    _consumeOnRampRateLimit(amount);
     bytes32 receiver = bytes32(destinationReceiver[0:32]);
     // Since this pool is the msg sender of the CCTP transaction, only this contract
     // is able to call replaceDepositForBurn. Since this contract does not implement
@@ -154,10 +154,10 @@ contract USDCTokenPool is TokenPool, ITypeAndVersion {
     bytes memory,
     address receiver,
     uint256 amount,
-    uint64 remoteChainSelector,
+    uint64,
     bytes memory extraData
-  ) external override onlyOffRamp(remoteChainSelector) {
-    _consumeInboundRateLimit(remoteChainSelector, amount);
+  ) external override onlyOffRamp {
+    _consumeOffRampRateLimit(amount);
     (bytes memory sourceData, bytes memory offchainTokenData) = abi.decode(extraData, (bytes, bytes));
     SourceTokenDataPayload memory sourceTokenData = abi.decode(sourceData, (SourceTokenDataPayload));
     MessageAndAttestation memory msgAndAttestation = abi.decode(offchainTokenData, (MessageAndAttestation));

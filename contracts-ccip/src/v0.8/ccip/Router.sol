@@ -14,9 +14,9 @@ import {Internal} from "./libraries/Internal.sol";
 import {CallWithExactGas} from "../shared/call/CallWithExactGas.sol";
 import {OwnerIsCreator} from "../shared/access/OwnerIsCreator.sol";
 
-import {EnumerableSet} from "../vendor/openzeppelin-solidity/v4.8.3/contracts/utils/structs/EnumerableSet.sol";
-import {SafeERC20} from "../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IERC20} from "../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
+import {EnumerableSet} from "../vendor/openzeppelin-solidity/v4.8.0/contracts/utils/structs/EnumerableSet.sol";
+import {SafeERC20} from "../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20} from "../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
 
 /// @title Router
 /// @notice This is the entry point for the end user wishing to send data across chains.
@@ -45,6 +45,7 @@ contract Router is IRouter, IRouterClient, ITypeAndVersion, OwnerIsCreator {
     address offRamp;
   }
 
+  // solhint-disable-next-line chainlink-solidity/all-caps-constant-storage-variables
   string public constant override typeAndVersion = "Router 1.2.0";
   // We limit return data to a selector plus 4 words. This is to avoid
   // malicious contracts from returning large amounts of data and causing
@@ -206,7 +207,9 @@ contract Router is IRouter, IRouterClient, ITypeAndVersion, OwnerIsCreator {
     return i_armProxy;
   }
 
-  /// @inheritdoc IRouter
+  /// @notice Return the configured onramp for specific a destination chain.
+  /// @param destChainSelector The destination chain Id to get the onRamp for.
+  /// @return The address of the onRamp.
   function getOnRamp(uint64 destChainSelector) external view returns (address) {
     return s_onRamps[destChainSelector];
   }
@@ -224,7 +227,6 @@ contract Router is IRouter, IRouterClient, ITypeAndVersion, OwnerIsCreator {
     return offRamps;
   }
 
-  /// @inheritdoc IRouter
   function isOffRamp(uint64 sourceChainSelector, address offRamp) public view returns (bool) {
     // We have to encode the sourceChainSelector and offRamp into a uint256 to use as a key in the set.
     return s_chainSelectorAndOffRamps.contains(_mergeChainSelectorAndOffRamp(sourceChainSelector, offRamp));

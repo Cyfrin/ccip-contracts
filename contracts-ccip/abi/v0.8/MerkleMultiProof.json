@@ -1,0 +1,12 @@
+[
+  {
+    "inputs": [],
+    "name": "InvalidProof",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "LeavesCannotBeEmpty",
+    "type": "error"
+  }
+]

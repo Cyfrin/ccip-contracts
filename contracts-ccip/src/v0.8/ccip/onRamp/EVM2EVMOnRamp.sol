@@ -16,9 +16,9 @@ import {RateLimiter} from "../libraries/RateLimiter.sol";
 import {USDPriceWith18Decimals} from "../libraries/USDPriceWith18Decimals.sol";
 import {EnumerableMapAddresses} from "../../shared/enumerable/EnumerableMapAddresses.sol";
 
-import {SafeERC20} from "../../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IERC20} from "../../vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
-import {EnumerableMap} from "../../vendor/openzeppelin-solidity/v4.8.3/contracts/utils/structs/EnumerableMap.sol";
+import {SafeERC20} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
+import {EnumerableMap} from "../../vendor/openzeppelin-solidity/v4.8.0/contracts/utils/structs/EnumerableMap.sol";
 
 /// @notice The onRamp is a contract that handles lane-specific fee logic, NOP payments and
 /// bridgeable token support.
@@ -140,7 +140,8 @@ contract EVM2EVMOnRamp is IEVM2AnyOnRamp, ILinkAvailable, AggregateRateLimiter, 
   }
 
   // STATIC CONFIG
-  string public constant override typeAndVersion = "EVM2EVMOnRamp 1.5.0-dev";
+  // solhint-disable-next-line chainlink-solidity/all-caps-constant-storage-variables
+  string public constant override typeAndVersion = "EVM2EVMOnRamp 1.2.0";
   /// @dev metadataHash is a lane-specific prefix for a message hash preimage which ensures global uniqueness
   /// Ensures that 2 identical messages sent to 2 different lanes will have a distinct hash.
   /// Must match the metadataHash used in computing leaf hashes offchain for the root committed in
@@ -825,24 +826,17 @@ contract EVM2EVMOnRamp is IEVM2AnyOnRamp, ILinkAvailable, AggregateRateLimiter, 
     s_nopFeesJuels = fundsLeft;
   }
 
-  /// @notice Allows the owner to withdraw any ERC20 token from the contract.
-  /// The NOP link balance is not withdrawable.
+  /// @notice Allows the owner to withdraw any ERC20 token that is not the fee token
   /// @param feeToken The token to withdraw
   /// @param to The address to send the tokens to
   function withdrawNonLinkFees(address feeToken, address to) external onlyOwnerOrAdmin {
-    if (to == address(0)) revert InvalidWithdrawParams();
+    if (feeToken == i_linkToken || to == address(0)) revert InvalidWithdrawParams();
 
-    // We require the link balance to be settled before allowing withdrawal of non-link fees.
-    int256 linkAfterNopFees = _linkLeftAfterNopFees();
-    if (linkAfterNopFees < 0) revert LinkBalanceNotSettled();
+    // We require the link balance to be settled before allowing withdrawal
+    // of non-link fees.
+    if (_linkLeftAfterNopFees() < 0) revert LinkBalanceNotSettled();
 
-    if (feeToken == i_linkToken) {
-      // Withdraw only the left over link balance
-      IERC20(feeToken).safeTransfer(to, uint256(linkAfterNopFees));
-    } else {
-      // Withdrawal all non-link tokens in the contract
-      IERC20(feeToken).safeTransfer(to, IERC20(feeToken).balanceOf(address(this)));
-    }
+    IERC20(feeToken).safeTransfer(to, IERC20(feeToken).balanceOf(address(this)));
   }
 
   // ================================================================

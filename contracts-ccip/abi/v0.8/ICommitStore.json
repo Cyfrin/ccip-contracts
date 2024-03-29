@@ -1,0 +1,44 @@
+[
+  {
+    "inputs": [],
+    "name": "getExpectedNextSequenceNumber",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "sequenceNumber",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "hashedLeaves",
+        "type": "bytes32[]"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "proofs",
+        "type": "bytes32[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "proofFlagBits",
+        "type": "uint256"
+      }
+    ],
+    "name": "verify",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

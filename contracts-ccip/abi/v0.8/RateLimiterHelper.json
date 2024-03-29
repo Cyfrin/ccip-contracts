@@ -1,0 +1,237 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "isEnabled",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint128",
+            "name": "capacity",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "rate",
+            "type": "uint128"
+          }
+        ],
+        "internalType": "struct RateLimiter.Config",
+        "name": "config",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "capacity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "requested",
+        "type": "uint256"
+      }
+    ],
+    "name": "AggregateValueMaxCapacityExceeded",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "minWaitInSeconds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "available",
+        "type": "uint256"
+      }
+    ],
+    "name": "AggregateValueRateLimitReached",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "BucketOverfilled",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "capacity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "requested",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TokenMaxCapacityExceeded",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "minWaitInSeconds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "available",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TokenRateLimitReached",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "requestTokens",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "consume",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currentTokenBucketState",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint128",
+            "name": "tokens",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint32",
+            "name": "lastUpdated",
+            "type": "uint32"
+          },
+          {
+            "internalType": "bool",
+            "name": "isEnabled",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint128",
+            "name": "capacity",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "rate",
+            "type": "uint128"
+          }
+        ],
+        "internalType": "struct RateLimiter.TokenBucket",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRateLimiter",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint128",
+            "name": "tokens",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint32",
+            "name": "lastUpdated",
+            "type": "uint32"
+          },
+          {
+            "internalType": "bool",
+            "name": "isEnabled",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint128",
+            "name": "capacity",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "rate",
+            "type": "uint128"
+          }
+        ],
+        "internalType": "struct RateLimiter.TokenBucket",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "isEnabled",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint128",
+            "name": "capacity",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "rate",
+            "type": "uint128"
+          }
+        ],
+        "internalType": "struct RateLimiter.Config",
+        "name": "config",
+        "type": "tuple"
+      }
+    ],
+    "name": "setTokenBucketConfig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

@@ -1,0 +1,88 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "layer",
+        "type": "bytes32[]"
+      }
+    ],
+    "name": "computeNextLayer",
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "hashedLeaves",
+        "type": "bytes32[]"
+      }
+    ],
+    "name": "getMerkleRoot",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "left",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "right",
+        "type": "bytes32"
+      }
+    ],
+    "name": "hashInternalNode",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "a",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "b",
+        "type": "bytes32"
+      }
+    ],
+    "name": "hashPair",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]

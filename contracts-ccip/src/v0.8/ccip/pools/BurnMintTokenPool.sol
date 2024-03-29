@@ -13,14 +13,14 @@ import {BurnMintTokenPoolAbstract} from "./BurnMintTokenPoolAbstract.sol";
 /// The only way to change whitelisting mode is to deploy a new pool.
 /// If that is expected, please make sure the token's burner/minter roles are adjustable.
 contract BurnMintTokenPool is BurnMintTokenPoolAbstract, ITypeAndVersion {
-  string public constant override typeAndVersion = "BurnMintTokenPool 1.4.0";
+  // solhint-disable-next-line chainlink-solidity/all-caps-constant-storage-variables
+  string public constant override typeAndVersion = "BurnMintTokenPool 1.2.0";
 
   constructor(
     IBurnMintERC20 token,
     address[] memory allowlist,
-    address armProxy,
-    address router
-  ) TokenPool(token, allowlist, armProxy, router) {}
+    address armProxy
+  ) TokenPool(token, allowlist, armProxy) {}
 
   /// @inheritdoc BurnMintTokenPoolAbstract
   function _burn(uint256 amount) internal virtual override {

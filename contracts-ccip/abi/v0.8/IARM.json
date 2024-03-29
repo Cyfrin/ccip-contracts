@@ -1,0 +1,46 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "commitStore",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "root",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct IARM.TaggedRoot",
+        "name": "taggedRoot",
+        "type": "tuple"
+      }
+    ],
+    "name": "isBlessed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isCursed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

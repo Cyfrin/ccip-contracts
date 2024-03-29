@@ -1,0 +1,129 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "capacity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "requested",
+        "type": "uint256"
+      }
+    ],
+    "name": "AggregateValueMaxCapacityExceeded",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "minWaitInSeconds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "available",
+        "type": "uint256"
+      }
+    ],
+    "name": "AggregateValueRateLimitReached",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "BucketOverfilled",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyCallableByAdminOrOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "capacity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "requested",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TokenMaxCapacityExceeded",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "minWaitInSeconds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "available",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TokenRateLimitReached",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "isEnabled",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint128",
+            "name": "capacity",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "rate",
+            "type": "uint128"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct RateLimiter.Config",
+        "name": "config",
+        "type": "tuple"
+      }
+    ],
+    "name": "ConfigChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokens",
+        "type": "uint256"
+      }
+    ],
+    "name": "TokensConsumed",
+    "type": "event"
+  }
+]
